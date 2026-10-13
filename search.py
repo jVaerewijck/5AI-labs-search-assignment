@@ -93,49 +93,25 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
 
-    solution = []
-    prev_location = util.Stack()
-    locations = []
-    current = (problem.getStartState(),0)
+    stack = util.Stack()
+    stack.push((problem.getStartState(), []))
+    visited = set()
 
-    success = False
-    while success:
-        if problem.isGoalState(current[0]):
-            success = True
-            break
-        successors = problem.getSuccessors(current[0])
-        print(successors)
-        duplicate = True
-        while duplicate:
-            if current[1] >= len(successors):
-                break
-            for loc in locations:
-                if successors[current[1]][0] == loc[0]:
-                    current[1]+=1
-                    duplicate = True
-                    break
-                duplicate = False
-        if current[1] >= len(successors):
-            current = prev_location.pop()
+    while not stack.isEmpty():
+        state, path = stack.pop()
+
+        if state in visited:
             continue
-        direction = successors[current[1]][1]
+        visited.add(state)
 
-        match direction:
-            case 'South': 
-                solution.append(Directions.SOUTH)
-            case 'West': 
-                solution.append(Directions.WEST)
-            case 'North': 
-                solution.append(Directions.NORTH)
-            case 'East': 
-                solution.append(Directions.EAST)
+        if problem.isGoalState(state):
+            return path
 
-        current[1]+=1
-        prev_location.push(current)
-        locations.append(current)
-        current = (successors[current[1]][0],0)
-    
-    return solution
+        for successor, action, cost in problem.getSuccessors(state):
+            if successor not in visited:
+                stack.push((successor, path + [action]))
+
+    return []
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
