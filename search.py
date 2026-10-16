@@ -187,7 +187,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
     frontier = util.PriorityQueue()
-    frontier.push((problem.startState, [], 0), heuristic(problem.startState, problem))
+    frontier.push((problem.getStartState(), [], 0), heuristic(problem.getStartState(), problem))
     visited = set()
 
     while not frontier.isEmpty():

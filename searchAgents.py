@@ -348,7 +348,7 @@ class CornersProblem(search.SearchProblem):
                 newVisited = tuple(
                 v or (nextState == c) for v, c in zip(vis, self.corners)
                 )
-                
+
                 successors.append( ( (nextState,newVisited), action, cost) )
 
         self._expanded += 1 # DO NOT CHANGE
@@ -388,7 +388,14 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    pos, vis = state
+    remaining = [c for c, v in zip(corners, vis) if not v]
+    if not remaining:
+        return 0
+
+    x, y = pos
+
+    return max(abs(x - cx) + abs(y - cy) for cx, cy in remaining)
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
