@@ -121,12 +121,12 @@ def breadthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
 
-    stack = util.Queue()
-    stack.push((problem.getStartState(), []))
+    queue = util.Queue()
+    queue.push((problem.getStartState(), []))
     visited = set()
 
-    while not stack.isEmpty():
-        state, path = stack.pop()
+    while not queue.isEmpty():
+        state, path = queue.pop()
 
         if state in visited:
             continue
@@ -137,7 +137,7 @@ def breadthFirstSearch(problem):
 
         for successor, action, cost in problem.getSuccessors(state):
             if successor not in visited:
-                stack.push((successor, path + [action]))
+                queue.push((successor, path + [action]))
 
     return []
     
