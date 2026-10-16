@@ -288,7 +288,6 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        self.corners_visited = []
         self.costFn = lambda x: 1
         self._visited, self._visitedlist = {}, []
 
@@ -298,19 +297,16 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return (self.startingPosition,len(self.corners_visited))
+        visited = tuple(self.startingPosition == c for c in self.corners)
+        return (self.startingPosition,visited)
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        isGoal = False
         loc, vis = state
-        if loc in self.corners and loc not in self.corners_visited:
-            self.corners_visited.append(loc)
-            if len(self.corners_visited) >=  4:
-                isGoal = True
+        isGoal = all(vis)
 
         if isGoal:
                     self._visitedlist.append(loc)
@@ -333,6 +329,8 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
+        loc, vis = state
+        x,y = loc
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -342,14 +340,16 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            loc, vis = state
-            x,y = loc
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
                 nextState = (nextx, nexty)
                 cost = self.costFn(nextState)
-                successors.append( ( (nextState,vis), action, cost) )
+                newVisited = tuple(
+                v or (nextState == c) for v, c in zip(vis, self.corners)
+                )
+                
+                successors.append( ( (nextState,newVisited), action, cost) )
 
         self._expanded += 1 # DO NOT CHANGE
         if loc not in self._visited:
