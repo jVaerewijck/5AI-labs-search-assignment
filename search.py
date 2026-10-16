@@ -149,7 +149,7 @@ def uniformCostSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
-    
+
     frontier = util.PriorityQueue()
     frontier.push((problem.getStartState(), [], 0), 0)
     visited = set()
@@ -181,27 +181,30 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    startState = problem.getStartState()
+    "*** YOUR CODE HERE ***"
+    print("Start:", problem.getStartState())
+    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+
     frontier = util.PriorityQueue()
-    frontier.push((startState, [], 0), heuristic(startState, problem))
-    expandedStates = set()
+    frontier.push((problem.startState, [], 0), heuristic(problem.startState, problem))
+    visited = set()
 
     while not frontier.isEmpty():
         state, path, costSoFar = frontier.pop()
 
-        if state in expandedStates:
+        if state in visited:
             continue
-        expandedStates.add(state)
+        visited.add(state)
 
         if problem.isGoalState(state):
             return path
 
         for successor, action, stepCost in problem.getSuccessors(state):
-            if successor in expandedStates:
-                continue
-            newCost = costSoFar + stepCost
-            priority = newCost + heuristic(successor, problem)
-            frontier.push((successor, path + [action], newCost), priority)
+            if successor not in visited:
+                newCost = costSoFar + stepCost
+                priority = newCost + heuristic(successor, problem)
+                frontier.push((successor, path + [action], newCost), priority)
 
     return []
 
