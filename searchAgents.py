@@ -289,6 +289,8 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         self.corners_visited = []
+        self.costFn = lambda x: 1
+        self._visited, self._visitedlist = {}, []
 
     def getStartState(self):
         """
@@ -296,18 +298,28 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
+        return (self.startingPosition,len(self.corners_visited))
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        if state in self.corners and state not in self.corners_visited:
-            self.corners_visited.append(state)
+        isGoal = False
+        loc, vis = state
+        if loc in self.corners and loc not in self.corners_visited:
+            self.corners_visited.append(loc)
             if len(self.corners_visited) >=  4:
-                return True
-        return False
+                isGoal = True
+
+        if isGoal:
+                    self._visitedlist.append(loc)
+                    import __main__
+                    if '_display' in dir(__main__):
+                        if 'drawExpandedCells' in dir(__main__._display): #@UndefinedVariable
+                            __main__._display.drawExpandedCells(self._visitedlist) #@UndefinedVariable
+
+        return isGoal
 
     def getSuccessors(self, state):
         """
@@ -330,15 +342,19 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            x,y = state
+            loc, vis = state
+            x,y = loc
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
                 nextState = (nextx, nexty)
                 cost = self.costFn(nextState)
-                successors.append( ( nextState, action, cost) )
+                successors.append( ( (nextState,vis), action, cost) )
 
         self._expanded += 1 # DO NOT CHANGE
+        if loc not in self._visited:
+                    self._visited[loc] = True
+                    self._visitedlist.append(loc)
         return successors
 
     def getCostOfActions(self, actions):
