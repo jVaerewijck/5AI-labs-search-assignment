@@ -151,7 +151,7 @@ def uniformCostSearch(problem):
 
 
     frontier = util.PriorityQueue()
-    frontier.push((problem.startState, [], 0))
+    frontier.push((problem.startState, []),0)
     visited = set()
 
     while not frontier.isEmpty():
@@ -167,7 +167,7 @@ def uniformCostSearch(problem):
         for successor, action, cost in problem.getSuccessors(state):
             if successor not in visited:
                 newCost = costSoFar + cost
-                frontier.push((successor, path + [action], newCost))
+                frontier.push((successor, path + [action]),newCost)
     
 
     return []
