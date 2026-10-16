@@ -149,9 +149,9 @@ def uniformCostSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
-
+    
     frontier = util.PriorityQueue()
-    frontier.push((problem.startState, []),0)
+    frontier.push((problem.getStartState(), [], 0), 0)
     visited = set()
 
     while not frontier.isEmpty():
@@ -164,11 +164,10 @@ def uniformCostSearch(problem):
         if problem.isGoalState(state):
             return path
 
-        for successor, action, cost in problem.getSuccessors(state):
+        for successor, action, stepCost in problem.getSuccessors(state):
             if successor not in visited:
-                newCost = costSoFar + cost
-                frontier.push((successor, path + [action]),newCost)
-    
+                newCost = costSoFar + stepCost
+                frontier.push((successor, path + [action], newCost), newCost)
 
     return []
 
